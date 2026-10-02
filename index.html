@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Part 6 Writing Drill</title>
+<style>
+:root{
+  --bg:#f4f7fb;--panel:#ffffff;--ink:#172033;--muted:#667085;--line:#dce3ee;
+  --primary:#2457d6;--primary2:#163fa8;--good:#15803d;--warn:#b45309;--bad:#b42318;
+  --soft:#eef4ff;--soft2:#f8fafc;--shadow:0 12px 35px rgba(24,39,75,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{min-height:100vh}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbarInner{max-width:1050px;margin:auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900}
+.brandIcon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--primary);color:#fff;font-size:20px}
+.spacer{flex:1}
+.pupilMini{text-align:right;line-height:1.15}
+.pupilMini b{display:block;font-size:14px}.pupilMini span{font-size:12px;color:var(--muted)}
+.iconBtn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px}
+main{max-width:1050px;margin:auto;padding:22px 16px 70px}
+.hero{background:linear-gradient(135deg,#1f4fc7,#3876ed);color:#fff;border-radius:24px;padding:26px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero:after{content:"✉";position:absolute;right:18px;top:0;font-size:110px;opacity:.09;transform:rotate(-10deg)}
+.hero h1{margin:0 0 8px;font-size:clamp(28px,5vw,44px)}.hero p{margin:0;max-width:720px;line-height:1.55;color:#eef4ff}
+.loginCard{max-width:520px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow)}
+.loginCard h1{margin:0 0 8px}.loginCard p{color:var(--muted);line-height:1.5}
+label{font-weight:800;font-size:13px}
+.textInput,.textArea{width:100%;border:1.5px solid #cdd7e5;border-radius:12px;background:#fff;padding:12px 13px;outline:none}
+.textInput:focus,.textArea:focus{border-color:var(--primary);box-shadow:0 0 0 3px #dce8ff}
+.codeInput{text-transform:uppercase;font-weight:800;letter-spacing:.08em;font-size:18px}
+.primary,.secondary,.ghost{border:0;border-radius:12px;padding:11px 15px;font-weight:800}
+.primary{background:var(--primary);color:#fff}.primary:hover{background:var(--primary2)}
+.secondary{background:#e9f0ff;color:#1c49b8}.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.primary:disabled,.secondary:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sectionHead{display:flex;gap:12px;align-items:end;margin:26px 0 13px}.sectionHead h2{margin:0}.sectionHead p{margin:2px 0 0;color:var(--muted)}
+.moduleGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.moduleCard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:0 4px 16px rgba(24,39,75,.05);position:relative;min-height:185px;display:flex;flex-direction:column}
+.moduleCard.unlocked{cursor:pointer}.moduleCard.unlocked:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.moduleCard.locked{opacity:.66}
+.moduleNo{width:38px;height:38px;border-radius:12px;background:var(--soft);color:var(--primary);display:grid;place-items:center;font-weight:900}
+.moduleCard h3{margin:13px 0 5px}.moduleCard p{font-size:13px;color:var(--muted);line-height:1.4;margin:0 0 12px}
+.moduleFoot{margin-top:auto}.lockTag,.statusTag{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800}
+.lockTag{background:#f2f4f7;color:#667085}.statusTag{background:#eaf8ef;color:#166534}
+.progressWrap{height:8px;background:#e8edf5;border-radius:99px;overflow:hidden;margin-top:8px}
+.progressBar{height:100%;background:var(--primary);border-radius:99px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 5px 20px rgba(24,39,75,.05)}
+.tip{background:#f0f6ff;border:1px solid #d6e4ff;border-radius:14px;padding:13px 14px;color:#26466f;line-height:1.45}
+.questionBox{background:#f8fafc;border:1px solid var(--line);border-radius:15px;padding:15px;margin:14px 0;white-space:pre-line;line-height:1.55}
+.answerBank{display:flex;gap:8px;flex-wrap:wrap;padding:12px;background:#fff8e8;border:1px solid #f4dca3;border-radius:13px;margin:12px 0}
+.answerChip{background:#fff;border:1px solid #ecd18e;border-radius:999px;padding:6px 10px;font-weight:800;font-size:13px}
+.emailCard{border:1px solid var(--line);border-radius:18px;margin:16px 0;overflow:hidden}
+.emailHead{background:#edf3ff;padding:12px 15px;font-weight:900}.emailBody{padding:17px;line-height:2.25}
+.inlineBlank{width:115px;max-width:42vw;border:0;border-bottom:2px solid #8795aa;background:#f9fbff;padding:3px 6px;text-align:center;outline:none}
+.inlineBlank.wide{width:175px}.inlineBlank.ok{border-bottom-color:var(--good);background:#effbf3}.inlineBlank.no{border-bottom-color:var(--bad);background:#fff0ef}
+.feedbackBox{border-radius:14px;padding:14px;margin-top:14px}.feedbackBox.good{background:#eefbf2;border:1px solid #bce5c9}.feedbackBox.warn{background:#fff8e8;border:1px solid #f4dca3}.feedbackBox.bad{background:#fff0ef;border:1px solid #f2c1bd}
+.transform{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.transform>div{padding:12px;border-radius:12px;background:#f8fafc;border:1px solid var(--line)}
+.mcq{border:1px solid var(--line);border-radius:17px;padding:16px;margin:14px 0}
+.mcq h3{font-size:16px;margin:0 0 11px}
+.option{display:block;border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin:8px 0;cursor:pointer;background:#fff}
+.option:hover{background:#f8fbff}.option input{margin-right:8px}
+.option b{display:block;margin-left:23px;margin-bottom:3px}.option small{display:block;margin-left:23px;color:var(--muted);line-height:1.35}
+.stageTabs{display:flex;gap:8px;overflow:auto;padding-bottom:6px;margin:15px 0}
+.stageTab{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-weight:800}.stageTab.active{background:var(--primary);color:#fff;border-color:var(--primary)}.stageTab.locked{opacity:.45}
+.qGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.qCard{border:1px solid var(--line);background:#fff;border-radius:15px;padding:13px;text-align:left}
+.qCard:hover:not(:disabled){border-color:#9ab5f6}.qCard:disabled{opacity:.45;cursor:not-allowed}
+.qCard b{display:block}.qCard small{color:var(--muted)}.qStatus{float:right;font-size:18px}
+.wordLine{display:flex;justify-content:space-between;gap:12px;margin:8px 0;color:var(--muted);font-size:13px}
+.textArea{min-height:190px;resize:vertical;line-height:1.6;font-size:16px}
+.scoreHero{display:flex;align-items:center;gap:16px;background:#eef4ff;border:1px solid #cadbff;border-radius:18px;padding:16px;margin-top:15px}
+.scoreBig{font-size:36px;font-weight:950;color:var(--primary)}
+.scoreParts{display:flex;gap:8px;flex-wrap:wrap}.scorePill{background:#fff;border:1px solid #cadbff;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800}
+.checkList{display:grid;gap:8px;margin:12px 0}.checkRow{border:1px solid var(--line);border-radius:12px;padding:10px 12px}.checkRow.met{border-color:#b8dfc4;background:#f1fbf4}.checkRow.missing{border-color:#efc0bc;background:#fff4f2}
+.issue{border-left:4px solid var(--warn);background:#fff9ec;border-radius:10px;padding:10px 12px;margin:8px 0}.issue.major{border-left-color:var(--bad);background:#fff2f0}
+.historyItem{border:1px solid var(--line);border-radius:13px;padding:11px;margin:8px 0;background:#fafcff}
+.tableWrap{overflow:auto;border:1px solid var(--line);border-radius:15px;background:#fff}
+.dataTable{width:100%;border-collapse:collapse;min-width:850px}
+.dataTable th,.dataTable td{padding:10px 11px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+.dataTable th{background:#f5f8fc;position:sticky;top:0;z-index:1}
+.dataTable tr:hover td{background:#fafcff}
+.pending{font-weight:900;color:var(--bad)}
+.miniStats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.miniStat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.miniStat b{font-size:20px;display:block}.miniStat span{font-size:12px;color:var(--muted)}
+.loader{width:18px;height:18px;border:3px solid #d7e2f9;border-top-color:var(--primary);border-radius:50%;display:inline-block;animation:spin .8s linear infinite;vertical-align:middle}@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);max-width:92vw;background:#172033;color:#fff;padding:11px 15px;border-radius:12px;z-index:99;box-shadow:var(--shadow)}
+@media(max-width:850px){.moduleGrid{grid-template-columns:repeat(2,1fr)}.qGrid{grid-template-columns:repeat(2,1fr)}.miniStats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){main{padding:14px 11px 65px}.topbarInner{padding:9px 11px}.brand span{display:none}.hero{padding:20px;border-radius:18px}.moduleGrid{grid-template-columns:1fr}.qGrid{grid-template-columns:1fr}.transform{grid-template-columns:1fr}.panel{padding:15px}.emailBody{padding:13px}.inlineBlank{width:100px}.pupilMini b{max-width:145px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+</style>
+</head>
+<body>
+<div class="app">
+<header id="topbar" class="topbar hidden">
+  <div class="topbarInner">
+    <div class="brand"><div class="brandIcon">✉</div><span>Part 6 Writing Drill</span></div>
+    <div class="spacer"></div>
+    <div class="pupilMini"><b id="miniName"></b><span id="miniClass"></span></div>
+    <button class="iconBtn" onclick="showHome()" title="Home">⌂</button>
+    <button class="iconBtn" onclick="logout()" title="Change pupil">⇥</button>
+  </div>
+</header>
+
+<main>
+<section id="loginScreen">
+  <div class="loginCard">
+    <div class="brandIcon" style="margin-bottom:12px">✉</div>
+    <h1>Part 6 Writing Drill</h1>
+    <p>Learn how to build a Part 6 email, change the question into a useful introduction, understand common instruction verbs, and finally write complete 30–50 word emails.</p>
+    <label for="codeInput">Pupil code</label>
+    <input id="codeInput" class="textInput codeInput" placeholder="e.g. Y5-001" maxlength="8" autocomplete="off">
+    <div class="row" style="margin-top:13px">
+      <button id="loginBtn" class="primary" onclick="login()">Start / Continue</button>
+      <button class="ghost" onclick="openTeacher()">Teacher Dashboard</button>
+    </div>
+    <div id="loginMsg"></div>
+  </div>
+</section>
+
+<section id="homeScreen" class="hidden">
+  <div class="hero">
+    <h1>Master Part 6, one step at a time.</h1>
+    <p>Complete each module to unlock the next one. Your progress, writing attempts and corrections are saved online, so you can continue on another device using the same pupil code.</p>
+  </div>
+  <div class="miniStats">
+    <div class="miniStat"><b id="sComplete">0/36</b><span>Writing questions completed</span></div>
+    <div class="miniStat"><b id="sMastered">0/36</b><span>Questions mastered</span></div>
+    <div class="miniStat"><b id="sCorrections">0</b><span>Corrections attempted</span></div>
+    <div class="miniStat"><b id="sCorrected">0</b><span>Corrections completed</span></div>
+  </div>
+  <div class="sectionHead"><div><h2>Training Modules</h2><p>Reach at least 80% to unlock the next module.</p></div></div>
+  <div id="moduleGrid" class="moduleGrid"></div>
+</section>
+
+<section id="moduleScreen" class="hidden"></section>
+<section id="writingScreen" class="hidden"></section>
+<section id="teacherScreen" class="hidden"></section>
+</main>
+</div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const CONFIG={
+  baseUrl:"https://qekcgsfeomjckctiubgm.supabase.co",
+  publishableKey:"sb_publishable_yJbCYOLDeMreuqM01g_oqA_eF5YEWwq",
+  functionName:"part6-drill"
+};
+
+const M1=[
+  {
+    key:"email1",
+    title:"Email 1 — Birthday Invitation",
+    question:"You want to invite your friend, Amir, to your birthday party. Write an email to invite him.",
+    bank:["I","you","my","on","at","and","3.00 p.m.","your","because","but","in"],
+    answers:["I","you","my","on","at","and","3.00 p.m."],
+    parts:[""," want to invite "," to "," birthday party. It will be "," Saturday "," my house. We can eat cake "," play some games together. Please come at ","."]
+  },
+  {
+    key:"email2",
+    title:"Email 2 — School Trip",
+    question:"You want to tell your friend, Sara, about your school trip. Write an email to tell her about it.",
+    bank:["I","you","my","to","last Friday","with my classmates","because","on","at","and","your"],
+    answers:["I","you","my","to","last Friday","with my classmates","because"],
+    parts:[""," want to tell "," about "," school trip. We went "," the museum ",". I went there ",". I enjoyed the trip "," I learnt many interesting things."]
+  },
+  {
+    key:"email3",
+    title:"Email 3 — Favourite Hobby",
+    question:"You want to tell your friend, Mei Ling, about your favourite hobby. Write an email to tell her about it.",
+    bank:["I","you","my","because","interesting","every evening","and","your","at","but","on"],
+    answers:["I","you","my","because","interesting","every evening","and"],
+    parts:[""," want to tell "," about "," favourite hobby. I enjoy reading "," it is fun and ",". I usually read ",". I read storybooks "," comics."]
+  }
+];
+
+const M2=[
+  {
+    q:"You want to tell your friend, Adam, about your new bicycle.",
+    expected:"I want to tell you about my new bicycle.",
+    changes:[["You","I"],["your friend, Adam","you"],["your new bicycle","my new bicycle"]]
+  },
+  {
+    q:"You want to invite your friend, Ali, to your barbecue.",
+    expected:"I want to invite you to my barbecue.",
+    changes:[["You","I"],["your friend, Ali","you"],["your barbecue","my barbecue"]]
+  },
+  {
+    q:"You want to ask your friend, Mei, about her new school.",
+    expected:"I want to ask you about your new school.",
+    changes:[["You","I"],["your friend, Mei","you"],["her new school","your new school"]]
+  }
+];
+
+const M3=[
+ {id:"tell",prompt:"Tell your friend when the competition starts.",options:[
+   ["information","Give the requested information","The competition starts at 9.00 a.m."],
+   ["reason","Give a reason","I like it because it is exciting."],
+   ["ask_join","Ask someone to join","Would you like to come with me?"],
+   ["what_like","Describe what something is like","The hall is large and bright."]
+ ]},
+ {id:"say",prompt:"Say where you want to meet.",options:[
+   ["state","State the information clearly","We can meet at the school gate."],
+   ["guidance","Give advice","You should wear comfortable shoes."],
+   ["gratitude","Show thanks","Thank you for helping me."],
+   ["remember","Remind someone","Remember to bring some water."]
+ ]},
+ {id:"describe",prompt:"Describe the place.",options:[
+   ["what_like","Say what it is like","The park is large, clean and beautiful."],
+   ["request_info","Ask for information","What time will you arrive?"],
+   ["reason","Give a reason","I chose it because it is fun."],
+   ["provide","Give a requested detail","I went there on Saturday."]
+ ]},
+ {id:"explain",prompt:"Explain why you like the activity.",options:[
+   ["reason","Give a reason or make it clear","I like the activity because I am very good at it."],
+   ["state","State a time or place","It starts at 3.00 p.m."],
+   ["ask_join","Invite someone","Would you like to join me?"],
+   ["remember","Give a reminder","Remember to bring your cap."]
+ ]},
+ {id:"invite",prompt:"Invite your friend to the picnic.",options:[
+   ["ask_join","Ask your friend to join you","Would you like to come to the picnic with me?"],
+   ["what_like","Describe the picnic","The picnic area is clean and shady."],
+   ["reason","Explain a reason","I chose it because it is relaxing."],
+   ["guidance","Give advice","You should bring a hat."]
+ ]},
+ {id:"suggest",prompt:"Suggest an activity to do together.",options:[
+   ["idea","Give an idea for an activity","We can play badminton together."],
+   ["request_info","Ask a question","What sport do you like?"],
+   ["gratitude","Say thank you","Thank you for inviting me."],
+   ["what_like","Describe something","The court is very large."]
+ ]},
+ {id:"recommend",prompt:"Recommend a place to visit.",options:[
+   ["best_choice","Say which choice you think is suitable","I think you should visit the museum."],
+   ["remember","Remind someone","Remember to bring your camera."],
+   ["state","State a fact","The museum opens at 9.00 a.m."],
+   ["request_info","Ask for information","Where do you want to go?"]
+ ]},
+ {id:"ask",prompt:"Ask your friend what she thinks about your idea.",options:[
+   ["request_info","Ask for information or an opinion","What do you think about my idea?"],
+   ["reason","Give a reason","I chose it because it is cheap."],
+   ["what_like","Describe something","The activity is fun and easy."],
+   ["gratitude","Thank someone","Thank you for your idea."]
+ ]},
+ {id:"advise",prompt:"Advise your friend what to wear.",options:[
+   ["guidance","Tell your friend what would be a good choice","You should wear comfortable sports shoes."],
+   ["state","State what you wear","I wear my blue shoes every Friday."],
+   ["request_info","Ask what your friend wears","What shoes do you usually wear?"],
+   ["ask_join","Invite your friend","Would you like to come with me?"]
+ ]},
+ {id:"give",prompt:"Give a reason why you chose the activity.",options:[
+   ["provide","Provide the information requested","I chose it because it is fun and healthy."],
+   ["remember","Give a reminder","Remember to bring some water."],
+   ["gratitude","Show thanks","Thank you for joining me."],
+   ["what_like","Describe something","The activity is exciting."]
+ ]},
+ {id:"thank",prompt:"Thank your friend for helping you.",options:[
+   ["gratitude","Show that you are grateful","Thank you for helping me with the project."],
+   ["idea","Suggest an idea","We can finish the poster together."],
+   ["guidance","Give advice","You should use bright colours."],
+   ["state","State a fact","The project is due on Friday."]
+ ]},
+ {id:"remind",prompt:"Remind your friend what to bring.",options:[
+   ["remember","Help your friend remember something","Remember to bring your water bottle."],
+   ["best_choice","Recommend something","I think you should visit the park."],
+   ["reason","Explain why","I like it because it is peaceful."],
+   ["request_info","Ask a question","What will you bring?"]
+ ]}
+];
+
+let state={
+  code:"",
+  pupil:null,
+  progress:null,
+  qProgress:[],
+  questions:[],
+  activeModule:null,
+  activeStage:1,
+  activeQuestion:null,
+  history:[],
+  latestMark:null
+};
+let teacherCode="";
+let teacherRows=[];
+
+function $(s){return document.querySelector(s)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function uuid(){return crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c==="x"?r:(r&3|8);return v.toString(16)})}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.remove("hidden");clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.add("hidden"),2600)}
+function showOnly(id){["loginScreen","homeScreen","moduleScreen","writingScreen","teacherScreen"].forEach(x=>$("#"+x).classList.toggle("hidden",x!==id))}
+function setBusy(btn,on,text="Working…"){if(!btn)return;if(on){btn.dataset.old=btn.innerHTML;btn.disabled=true;btn.innerHTML=`<span class="loader"></span> ${text}`}else{btn.disabled=false;btn.innerHTML=btn.dataset.old||btn.innerHTML}}
+function norm(v){return String(v??"").trim().toLowerCase().replace(/[’]/g,"'").replace(/[.,!?;:]+$/g,"").replace(/\s+/g," ")}
+function wordCount(v){return (String(v??"").trim().match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g)||[]).length}
+function statusIcon(p){if(!p)return "○";if(p.mastered)return "★";if(p.correction_status==="corrected")return "✓";if(Number(p.attempts)>1)return "✎";if(p.completed)return "✓";return "○"}
+function qp(no){return state.qProgress.find(x=>Number(x.question_no)===Number(no))}
+
+async function api(action,payload={}){
+  const res=await fetch(`${CONFIG.baseUrl}/functions/v1/${CONFIG.functionName}`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":CONFIG.publishableKey},
+    body:JSON.stringify({action,pupilCode:state.code,...payload})
+  });
+  const data=await res.json().catch(()=>({success:false,error:"Unreadable server response"}));
+  if(!res.ok||!data.success)throw new Error(data.error||"Request failed");
+  return data;
+}
+
+async function login(){
+  const btn=$("#loginBtn"),msg=$("#loginMsg");
+  state.code=$("#codeInput").value.trim().toUpperCase();
+  if(!state.code){msg.innerHTML='<div class="feedbackBox bad">Enter your pupil code first.</div>';return}
+  setBusy(btn,true,"Checking");
+  msg.innerHTML="";
+  try{
+    const data=await api("login");
+    state.pupil=data.pupil;state.progress=data.progress;state.qProgress=data.questionProgress||[];
+    localStorage.setItem("part6_drill_code",state.code);
+    $("#topbar").classList.remove("hidden");
+    $("#miniName").textContent=state.pupil.name;$("#miniClass").textContent=state.pupil.className||"";
+    showHome();
+    if(state.progress.module4Unlocked) loadQuestions();
+  }catch(e){msg.innerHTML=`<div class="feedbackBox bad">${esc(e.message)}</div>`}
+  finally{setBusy(btn,false)}
+}
+
+async function sync(){
+  const data=await api("sync");
+  state.pupil=data.pupil;state.progress=data.progress;state.qProgress=data.questionProgress||[];
+  renderHome();
+  return data;
+}
+
+function logout(){
+  state={code:"",pupil:null,progress:null,qProgress:[],questions:[],activeModule:null,activeStage:1,activeQuestion:null,history:[],latestMark:null};
+  $("#topbar").classList.add("hidden");showOnly("loginScreen");$("#codeInput").value=localStorage.getItem("part6_drill_code")||"";
+}
+
+function showHome(){
+  if(!state.pupil){showOnly("loginScreen");return}
+  showOnly("homeScreen");renderHome();
+}
+
+function renderHome(){
+  const p=state.progress||{};
+  $("#sComplete").textContent=`${p.completedQuestions||0}/36`;
+  $("#sMastered").textContent=`${p.masteredQuestions||0}/36`;
+  $("#sCorrections").textContent=p.correctionsAttempted||0;
+  $("#sCorrected").textContent=p.correctionsCompleted||0;
+  const modules=[
+    {n:1,title:"Build the Email",desc:"Complete 3 emails using the answer banks. Practise structure, pronouns, prepositions and conjunctions.",unlocked:true,best:p.module1BestPercent||0},
+    {n:2,title:"Introduction Transformer",desc:"Turn the first sentence of the question into a useful email introduction by changing the relevant pronouns.",unlocked:p.module2Unlocked===true,best:p.module2BestPercent||0},
+    {n:3,title:"Useful Verbs",desc:"Learn what tell, describe, explain, invite, suggest, recommend and other common Part 6 verbs require.",unlocked:p.module3Unlocked===true,best:p.module3BestPercent||0},
+    {n:4,title:"Full Part 6 Writing",desc:"36 complete 30–50 word email tasks, with AI marking, feedback, corrections and mastery tracking.",unlocked:p.module4Unlocked===true,best:Math.round(((p.masteredQuestions||0)/36)*100)}
+  ];
+  $("#moduleGrid").innerHTML=modules.map(m=>`
+    <div class="moduleCard ${m.unlocked?"unlocked":"locked"}" ${m.unlocked?`onclick="openModule(${m.n})"`:""}>
+      <div class="row"><div class="moduleNo">${m.n}</div><div class="spacer"></div>${m.unlocked?'<span class="statusTag">Available</span>':'<span class="lockTag">🔒 Locked</span>'}</div>
+      <h3>${m.title}</h3><p>${m.desc}</p>
+      <div class="moduleFoot"><b>${m.n===4?"Mastery": "Best score"}: ${m.best}%</b><div class="progressWrap"><div class="progressBar" style="width:${Math.min(100,m.best)}%"></div></div></div>
+    </div>`).join("");
+}
+
+function openModule(n){
+  if(n===4){openWritingHub();return}
+  state.activeModule=n;showOnly("moduleScreen");
+  if(n===1)renderM1();if(n===2)renderM2();if(n===3)renderM3();
+}
+
+function moduleHeader(n,title,subtitle){
+  return `<div class="row" style="margin-bottom:14px"><button class="ghost" onclick="showHome()">← Back</button></div>
+  <div class="hero"><h1>Module ${n}: ${title}</h1><p>${subtitle}</p></div>`;
+}
+
+function renderM1(){
+  $("#moduleScreen").innerHTML=moduleHeader(1,"Build the Email","Type the correct answers. The answer bank contains extra distractors, and its order changes each time.")
+  +`<div class="panel" style="margin-top:16px">
+    <div class="tip"><b>Remember the structure:</b> Greeting → Introduction → Content → Closing. For the introduction, reuse the first sentence of the question and change the relevant pronouns.</div>
+    ${M1.map((e,ei)=>{
+      const names=["Amir","Sara","Mei Ling"];
+      const closings=["See you!","Bye!","Take care!"];
+      let body=e.parts.map((p,i)=>i<e.answers.length?`${esc(p)}<input class="inlineBlank ${e.answers[i].length>12?"wide":""}" data-m1="${e.key}" data-i="${i}" autocomplete="off">`:esc(p)).join("");
+      return `<div class="emailCard">
+        <div class="emailHead">${e.title}</div>
+        <div style="padding:0 16px"><div class="questionBox">${esc(e.question)}</div>
+        <b>Answer bank</b><div class="answerBank">${shuffle(e.bank).map(x=>`<span class="answerChip">${esc(x)}</span>`).join("")}</div></div>
+        <div class="emailBody"><b>Hello ${names[ei]},</b><br><br>${body}<br><br><b>${closings[ei]}</b></div>
+      </div>`}).join("")}
+    <div id="m1Result"></div>
+    <button id="m1Btn" class="primary" onclick="submitM1()">Check My Answers</button>
+  </div>`;
+}
+
+async function submitM1(){
+  const answers={};let filled=true;
+  M1.forEach(e=>{answers[e.key]=e.answers.map((_,i)=>{const el=document.querySelector(`[data-m1="${e.key}"][data-i="${i}"]`);if(!el.value.trim())filled=false;return el.value})});
+  if(!filled){toast("Complete every blank first.");return}
+  const btn=$("#m1Btn");setBusy(btn,true,"Checking");
+  try{
+    const data=await api("complete_module",{module:1,eventId:uuid(),answers});
+    state.progress=data.progress;
+    let localCorrect=0,total=0;
+    M1.forEach(e=>e.answers.forEach((ans,i)=>{total++;const el=document.querySelector(`[data-m1="${e.key}"][data-i="${i}"]`);const ok=norm(el.value)===norm(ans);el.classList.toggle("ok",ok);el.classList.toggle("no",!ok);if(ok)localCorrect++}));
+    const pass=data.result.percent>=80;
+    $("#m1Result").innerHTML=`<div class="feedbackBox ${pass?"good":"warn"}"><b>${localCorrect}/${total} correct — ${data.result.percent}%</b><br>${pass?"Module 2 is now unlocked. You may still replay this module any time.":"You need at least 80%. Correct the red blanks and try again."}</div>`;
+    renderHome();
+  }catch(e){$("#m1Result").innerHTML=`<div class="feedbackBox bad">${esc(e.message)}</div>`}
+  finally{setBusy(btn,false)}
+}
+
+function renderM2(){
+  $("#moduleScreen").innerHTML=moduleHeader(2,"Introduction Transformer","Use the first sentence of the question as your introduction. Change only the pronouns that need to change.")
+  +`<div class="panel" style="margin-top:16px">
+    <div class="tip"><b>Main pattern:</b> <b>you → I</b>, <b>your → my</b>, and <b>your friend, Name → you</b>. But always think about who the pronoun refers to.</div>
+    ${M2.map((x,i)=>`<div class="emailCard"><div class="emailHead">Question ${i+1}</div><div style="padding:16px">
+      <div class="questionBox">${esc(x.q)}</div>
+      <label>Your introduction</label><input class="textInput m2Ans" data-m2="${i}" placeholder="Type the full introduction...">
+      <div id="m2fb${i}"></div>
+    </div></div>`).join("")}
+    <div id="m2Result"></div><button id="m2Btn" class="primary" onclick="submitM2()">Check My Introductions</button>
+  </div>`;
+}
+
+async function submitM2(){
+  const arr=[...document.querySelectorAll(".m2Ans")].map(x=>x.value.trim());
+  if(arr.some(x=>!x)){toast("Complete all three introductions first.");return}
+  const btn=$("#m2Btn");setBusy(btn,true,"Checking");
+  try{
+    const data=await api("complete_module",{module:2,eventId:uuid(),answers:arr});state.progress=data.progress;
+    M2.forEach((x,i)=>{
+      $("#m2fb"+i).innerHTML=`<div class="feedbackBox ${norm(arr[i])===norm(x.expected)?"good":"warn"}">
+        <b>Model introduction:</b> ${esc(x.expected)}
+        <div class="transform">${x.changes.map(c=>`<div><small>Question</small><br><b>${esc(c[0])}</b></div><div><small>Email</small><br><b>${esc(c[1])}</b></div>`).join("")}</div>
+      </div>`;
+    });
+    const pass=data.result.percent>=80;
+    $("#m2Result").innerHTML=`<div class="feedbackBox ${pass?"good":"warn"}"><b>${data.result.correct}/${data.result.total} transformation points — ${data.result.percent}%</b><br>${pass?"Module 3 is now unlocked.":"You need at least 80%. Study the transformations above and try again."}</div>`;
+    renderHome();
+  }catch(e){$("#m2Result").innerHTML=`<div class="feedbackBox bad">${esc(e.message)}</div>`}
+  finally{setBusy(btn,false)}
+}
+
+function renderM3(){
+  $("#moduleScreen").innerHTML=moduleHeader(3,"Useful Verbs","Learn what the instruction verb is asking you to write. Every option includes a sample sentence.")
+  +`<div class="panel" style="margin-top:16px">
+    <div class="tip">Do not memorise only the verb. Connect it to the kind of information it asks for: <b>explain → reason</b>, <b>describe → what it is like</b>, <b>invite → ask someone to join</b>, and so on.</div>
+    ${M3.map((q,qi)=>`<div class="mcq"><h3>${qi+1}. ${esc(q.prompt)}</h3>${shuffle(q.options).map(o=>`
+      <label class="option"><input type="radio" name="m3-${q.id}" value="${esc(o[0])}"><b>${esc(o[1])}</b><small>${esc(o[2])}</small></label>`).join("")}<div id="m3fb-${q.id}"></div></div>`).join("")}
+    <div id="m3Result"></div><button id="m3Btn" class="primary" onclick="submitM3()">Check My Answers</button>
+  </div>`;
+}
+
+async function submitM3(){
+  const answers={};let done=true;
+  M3.forEach(q=>{const x=document.querySelector(`input[name="m3-${q.id}"]:checked`);if(!x)done=false;else answers[q.id]=x.value});
+  if(!done){toast("Answer all 12 questions first.");return}
+  const btn=$("#m3Btn");setBusy(btn,true,"Checking");
+  try{
+    const data=await api("complete_module",{module:3,eventId:uuid(),answers});state.progress=data.progress;
+    M3.forEach(q=>{
+      const correct=q.options[0][0]; // source array always stores the correct option first
+      const selected=answers[q.id];const model=q.options.find(o=>o[0]===correct);
+      $("#m3fb-"+q.id).innerHTML=`<div class="feedbackBox ${selected===correct?"good":"warn"}">${selected===correct?"✅ Correct.":"Not yet."} <b>${esc(model[1])}</b> — ${esc(model[2])}</div>`;
+    });
+    const pass=data.result.percent>=80;
+    $("#m3Result").innerHTML=`<div class="feedbackBox ${pass?"good":"warn"}"><b>${data.result.correct}/${data.result.total} correct — ${data.result.percent}%</b><br>${pass?"Module 4 is now unlocked. You are ready for full Part 6 writing.":"You need at least 80%. Review the sample sentences and retry the quiz."}</div>`;
+    renderHome();
+    if(pass)loadQuestions();
+  }catch(e){$("#m3Result").innerHTML=`<div class="feedbackBox bad">${esc(e.message)}</div>`}
+  finally{setBusy(btn,false)}
+}
+
+async function loadQuestions(){
+  if(state.questions.length)return;
+  try{const data=await api("questions");state.questions=data.questions||[];state.activeStage=data.currentWritingStage||1}
+  catch(e){console.error(e)}
+}
+
+async function openWritingHub(){
+  showOnly("writingScreen");
+  $("#writingScreen").innerHTML=`<div class="row"><button class="ghost" onclick="showHome()">← Back</button></div><div class="panel" style="margin-top:14px"><span class="loader"></span> Loading writing questions…</div>`;
+  try{
+    if(!state.questions.length){const data=await api("questions");state.questions=data.questions||[]}
+    state.activeStage=Math.min(state.activeStage||1,state.progress.currentWritingStage||1);
+    renderWritingHub();
+  }catch(e){$("#writingScreen").innerHTML=`<div class="feedbackBox bad">${esc(e.message)}</div>`}
+}
+
+function renderWritingHub(){
+  const stageNames=["5W1H Foundation","Mixed 5W1H","Useful Verbs Begin","Useful Verbs","Mixed Practice","Independent Exam Practice"];
+  const unlocked=state.progress.currentWritingStage||1;
+  $("#writingScreen").innerHTML=`<div class="row"><button class="ghost" onclick="showHome()">← Back</button><div class="spacer"></div><span class="statusTag">${state.progress.completedQuestions||0}/36 completed</span></div>
+  <div class="hero" style="margin-top:14px"><h1>Module 4: Full Part 6 Writing</h1><p>Write 30–50 words. After submission, read the feedback and correct your answer. Your first attempt is never erased.</p></div>
+  <div class="stageTabs">${stageNames.map((n,i)=>{const s=i+1,l=s>unlocked;return `<button class="stageTab ${state.activeStage===s?"active":""} ${l?"locked":""}" ${l?"disabled":""} onclick="state.activeStage=${s};renderWritingHub()">Stage ${s}: ${n}</button>`}).join("")}</div>
+  <div class="qGrid">${state.questions.filter(q=>Number(q.stage)===Number(state.activeStage)).map(q=>{
+    const p=qp(q.question_no);const locked=Number(q.stage)>unlocked&&!p;
+    return `<button class="qCard" ${locked?"disabled":""} onclick="openQuestion(${q.question_no})"><span class="qStatus">${statusIcon(p)}</span><b>Question ${q.question_no}</b><small>${esc(q.title)}</small>${p?`<div style="margin-top:7px;font-size:12px">Latest: <b>${p.latest_score}/10</b> • Attempts: ${p.attempts}</div>`:""}</button>`}).join("")}</div>
+  <div class="tip" style="margin-top:15px"><b>Symbols:</b> ○ Not attempted &nbsp; ✓ Completed &nbsp; ✎ Correction attempted &nbsp; ★ Mastered (8/10 or above with all required content fulfilled).</div>`;
+}
+
+async function openQuestion(no){
+  const q=state.questions.find(x=>Number(x.question_no)===Number(no));if(!q)return;
+  state.activeQuestion=q;state.latestMark=null;showOnly("writingScreen");
+  $("#writingScreen").innerHTML=`<div class="panel"><span class="loader"></span> Loading your previous attempts…</div>`;
+  try{
+    const h=await api("question_history",{questionNo:no});state.history=h.history||[];renderQuestion();
+  }catch(e){state.history=[];renderQuestion();toast("Could not load previous attempts: "+e.message)}
+}
+
+function latestAttempt(){return state.history.length?state.history[state.history.length-1]:null}
+function draftKey(){return `part6_draft_${state.code}_${state.activeQuestion.question_no}`}
+
+function renderQuestion(){
+  const q=state.activeQuestion,last=latestAttempt(),draft=localStorage.getItem(draftKey());
+  const initial=draft!==null?draft:(last?last.response_text:"");
+  $("#writingScreen").innerHTML=`<div class="row"><button class="ghost" onclick="renderWritingHub()">← Questions</button><div class="spacer"></div><span class="statusTag">Stage ${q.stage}</span></div>
+  <div class="panel" style="margin-top:14px">
+    <h2 style="margin-top:0">Question ${q.question_no}: ${esc(q.title)}</h2>
+    <div class="questionBox">${esc(q.task_text)}</div>
+    <label>Your email</label>
+    <textarea id="essayBox" class="textArea" placeholder="Hello ...," oninput="essayChanged()">${esc(initial)}</textarea>
+    <div class="wordLine"><span>Target: about 30–50 words</span><b id="wc">${wordCount(initial)} words</b></div>
+    <div class="row">
+      <button id="gradeBtn" class="primary" onclick="submitWriting()">${last?"Submit Correction":"Submit for AI Marking"}</button>
+      ${last?'<button class="ghost" onclick="showHistory()">View Attempts</button>':""}
+    </div>
+    <div id="markResult"></div>
+  </div>`;
+  if(last&&!draft) localStorage.setItem(draftKey(),initial);
+}
+
+function essayChanged(){
+  const v=$("#essayBox").value;$("#wc").textContent=`${wordCount(v)} words`;localStorage.setItem(draftKey(),v)
+}
+
+async function submitWriting(){
+  const text=$("#essayBox").value.trim();if(!text){toast("Write your email first.");return}
+  const wc=wordCount(text);
+  if((wc<30||wc>50)&&!confirm(`Your email has ${wc} words. The target is about 30–50 words. Submit it anyway?`))return;
+  const btn=$("#gradeBtn");setBusy(btn,true,"AI marking");
+  try{
+    const data=await api("grade",{questionNo:state.activeQuestion.question_no,responseText:text,submissionId:uuid()});
+    state.latestMark=data.attempt;state.progress=data.progress;
+    localStorage.removeItem(draftKey());
+    const syncData=await api("sync");state.qProgress=syncData.questionProgress||[];state.progress=syncData.progress;
+    const h=await api("question_history",{questionNo:state.activeQuestion.question_no});state.history=h.history||[];
+    renderMarkResult(data.attempt);
+  }catch(e){$("#markResult").innerHTML=`<div class="feedbackBox bad"><b>Submission was not completed.</b><br>${esc(e.message)}<br><small>Your draft is still saved on this device.</small></div>`}
+  finally{setBusy(btn,false)}
+}
+
+function renderMarkResult(a){
+  const box=$("#markResult");if(!box)return;
+  const content=(a.contentChecks||[]).map(c=>`<div class="checkRow ${c.status==="MET"?"met":"missing"}"><b>${c.status==="MET"?"✅":"⚠️"} ${esc(c.id)}</b><br><small>${esc(c.evidence||"")}</small></div>`).join("");
+  const issues=(a.issues||[]).map(i=>`<div class="issue ${i.severity==="MAJOR"?"major":""}"><b>${esc(i.type)}: ${esc(i.explanation)}</b>${i.original?`<div>✗ ${esc(i.original)}</div>`:""}${i.suggested?`<div>✓ ${esc(i.suggested)}</div>`:""}</div>`).join("");
+  const cr=a.correctionReview||{};
+  const review=cr.was_correction?`<div class="feedbackBox ${cr.fixed_count>=cr.total_previous_issues?"good":"warn"}"><b>Correction check:</b> ${cr.fixed_count}/${cr.total_previous_issues} previous feedback points fixed.
+    ${(cr.previous_issue_results||[]).map(x=>`<div style="margin-top:5px">${x.status==="FIXED"||x.status==="NO_LONGER_RELEVANT"?"✅":"⚠️"} <b>${esc(x.status)}</b> — ${esc(x.note)}</div>`).join("")}</div>`:"";
+  box.innerHTML=`<div class="scoreHero"><div class="scoreBig">${a.totalScore}/10</div><div><b>AI Part 6 Mark</b><div class="scoreParts"><span class="scorePill">Content & Communication: ${a.ccaScore}/5</span><span class="scorePill">Organisation & Language: ${a.olScore}/5</span><span class="scorePill">${a.wordCount} words</span></div></div></div>
+  ${review}
+  <h3>Task fulfilment</h3><div class="checkList">${content}</div>
+  <h3>Email structure</h3><div class="checkList">
+    <div class="checkRow"><b>Greeting:</b> ${esc(a.structureChecks?.greeting||"—")}</div>
+    <div class="checkRow"><b>Introduction:</b> ${esc(a.structureChecks?.introduction||"—")}<br><small>${esc(a.structureChecks?.introduction_note||"")}</small></div>
+    <div class="checkRow"><b>Closing:</b> ${esc(a.structureChecks?.closing||"—")}</div>
+  </div>
+  <h3>What you did well</h3><div class="feedbackBox good">${esc(a.feedback?.did_well||"")}</div>
+  <h3>What to improve</h3><div class="feedbackBox warn">${esc(a.feedback?.improve||"")}</div>
+  ${issues?`<h3>Corrections to make</h3>${issues}`:"<div class='feedbackBox good'><b>No specific correction is needed. Well done!</b></div>"}
+  <div class="tip" style="margin-top:12px"><b>Tip:</b> ${esc(a.feedback?.tip||"")}</div>
+  <div class="row" style="margin-top:14px"><button class="primary" onclick="correctAnswer()">Correct My Answer</button><button class="secondary" onclick="renderWritingHub()">Back to Questions</button></div>`;
+  box.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function correctAnswer(){
+  const last=latestAttempt();if(!last)return;
+  $("#essayBox").value=last.response_text;localStorage.setItem(draftKey(),last.response_text);essayChanged();$("#essayBox").focus();$("#essayBox").scrollIntoView({behavior:"smooth",block:"center"});
+  toast("Edit your previous answer, then submit the correction.");
+}
+
+function showHistory(){
+  const items=state.history.map(h=>`<div class="historyItem"><div class="row"><b>Attempt ${h.attempt_no}</b><div class="spacer"></div><b>${h.total_score}/10</b></div><small>${new Date(h.created_at).toLocaleString()}</small><p style="white-space:pre-wrap">${esc(h.response_text)}</p>${h.attempt_no>1&&h.correction_review?.was_correction?`<small>Correction: ${h.correction_review.fixed_count}/${h.correction_review.total_previous_issues} previous issues fixed.</small>`:""}</div>`).join("");
+  $("#markResult").innerHTML=`<h3>Attempt History</h3>${items||"<p>No attempts yet.</p>"}`;
+  $("#markResult").scrollIntoView({behavior:"smooth"});
+}
+
+
+async function openTeacher(){
+  const code=prompt("Enter the teacher access code:");
+  if(code===null)return;
+  teacherCode=code.trim();
+  if(!teacherCode){toast("Teacher access code is required.");return}
+  $("#topbar").classList.add("hidden");
+  showOnly("teacherScreen");
+  $("#teacherScreen").innerHTML=`<div class="loginCard"><span class="loader"></span> Loading teacher dashboard…</div>`;
+  try{
+    const data=await api("teacher_dashboard",{teacherCode,includeTesters:false});
+    teacherRows=data.rows||[];
+    renderTeacherDashboard(false);
+  }catch(e){
+    teacherCode="";
+    $("#teacherScreen").innerHTML=`<div class="loginCard"><h2>Teacher Dashboard</h2><div class="feedbackBox bad">${esc(e.message)}</div><button class="ghost" onclick="showOnly('loginScreen')">← Back</button></div>`;
+  }
+}
+
+async function refreshTeacher(includeTesters){
+  try{
+    const data=await api("teacher_dashboard",{teacherCode,includeTesters});
+    teacherRows=data.rows||[];
+    renderTeacherDashboard(includeTesters);
+  }catch(e){toast(e.message)}
+}
+
+function renderTeacherDashboard(includeTesters=false){
+  const started=teacherRows.filter(x=>x.hasStarted).length;
+  const reachedWriting=teacherRows.filter(x=>x.module4Unlocked).length;
+  const corrected=teacherRows.filter(x=>x.correctionsCompleted>0).length;
+  const pending=teacherRows.reduce((n,x)=>n+Number(x.pendingCorrections||0),0);
+  $("#teacherScreen").innerHTML=`
+    <div class="row"><button class="ghost" onclick="teacherCode='';showOnly('loginScreen')">← Exit Teacher View</button><div class="spacer"></div>
+      <label style="font-weight:700"><input type="checkbox" ${includeTesters?"checked":""} onchange="refreshTeacher(this.checked)"> Include testers</label>
+    </div>
+    <div class="hero" style="margin-top:14px"><h1>Teacher Progress Dashboard</h1><p>See module progress, Part 6 writing mastery, correction attempts and unresolved feedback across Year 5 and Year 6.</p></div>
+    <div class="miniStats">
+      <div class="miniStat"><b>${started}</b><span>Pupils started</span></div>
+      <div class="miniStat"><b>${reachedWriting}</b><span>Reached Module 4</span></div>
+      <div class="miniStat"><b>${corrected}</b><span>Made a successful correction</span></div>
+      <div class="miniStat"><b>${pending}</b><span>Pending question corrections</span></div>
+    </div>
+    <div class="sectionHead"><div><h2>Pupil Progress</h2><p>Correction attempted means the pupil submitted at least one revised answer. Correction completed means previous feedback was successfully addressed.</p></div></div>
+    <div class="tableWrap"><table class="dataTable">
+      <thead><tr><th>Pupil</th><th>Class</th><th>M1</th><th>M2</th><th>M3</th><th>Writing</th><th>Mastered</th><th>Corrections</th><th>Pending</th><th></th></tr></thead>
+      <tbody>${teacherRows.map(r=>`<tr>
+        <td><b>${esc(r.name)}</b><br><small>${esc(r.pupilCode)}</small></td>
+        <td>${esc(r.className||"")}</td>
+        <td>${r.module1BestPercent}%</td><td>${r.module2BestPercent}%</td><td>${r.module3BestPercent}%</td>
+        <td>${r.completedQuestions}/36<br><small>Stage ${r.currentWritingStage}</small></td>
+        <td>${r.masteredQuestions}/36</td>
+        <td>${r.correctionsAttempted} attempted<br>${r.correctionsCompleted} completed</td>
+        <td class="${r.pendingCorrections?"pending":""}">${r.pendingCorrections}</td>
+        <td><button class="secondary" onclick="teacherPupilDetail('${r.studentId}')">View</button></td>
+      </tr>`).join("")}</tbody>
+    </table></div>`;
+}
+
+async function teacherPupilDetail(studentId){
+  $("#teacherScreen").innerHTML=`<div class="panel"><span class="loader"></span> Loading pupil history…</div>`;
+  try{
+    const data=await api("teacher_pupil_detail",{teacherCode,studentId});
+    const p=data.pupil, qps=data.questionProgress||[], ats=data.attempts||[];
+    const byQ=new Map();
+    ats.forEach(a=>{if(!byQ.has(a.question_no))byQ.set(a.question_no,[]);byQ.get(a.question_no).push(a)});
+    $("#teacherScreen").innerHTML=`
+      <div class="row"><button class="ghost" onclick="renderTeacherDashboard(false)">← Dashboard</button></div>
+      <div class="panel" style="margin-top:14px"><h2 style="margin-top:0">${esc(p.name)}</h2><p style="color:var(--muted)">${esc(p.className||"")} • ${esc(p.code)}</p>
+      <div class="tableWrap"><table class="dataTable" style="min-width:760px"><thead><tr><th>Q</th><th>First</th><th>Latest</th><th>Best</th><th>Attempts</th><th>Correction</th><th>Issues</th></tr></thead>
+      <tbody>${qps.map(q=>`<tr><td><b>${q.question_no}</b></td><td>${q.first_score}/10</td><td>${q.latest_score}/10</td><td>${q.best_score}/10</td><td>${q.attempts}</td><td>${esc(q.correction_status)}</td><td>${q.issues_fixed}/${q.issues_identified} fixed</td></tr>`).join("")||'<tr><td colspan="7">No writing attempts yet.</td></tr>'}</tbody></table></div>
+      <h3>Writing attempts</h3>${[...byQ.entries()].map(([q,list])=>`<div class="emailCard"><div class="emailHead">Question ${q}</div><div style="padding:13px">${list.map(a=>`<div class="historyItem"><div class="row"><b>Attempt ${a.attempt_no}</b><div class="spacer"></div><b>${a.total_score}/10</b></div><p style="white-space:pre-wrap">${esc(a.response_text)}</p>${a.correction_review?.was_correction?`<small>Correction review: ${a.correction_review.fixed_count}/${a.correction_review.total_previous_issues} previous issues fixed.</small>`:""}</div>`).join("")}</div></div>`).join("")||"<p>No full-email submissions yet.</p>"}
+      </div>`;
+  }catch(e){
+    $("#teacherScreen").innerHTML=`<div class="feedbackBox bad">${esc(e.message)}</div><button class="ghost" onclick="renderTeacherDashboard(false)">← Dashboard</button>`;
+  }
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  const saved=localStorage.getItem("part6_drill_code")||"";$("#codeInput").value=saved;
+  $("#codeInput").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
+});
+</script>
+</body>
+</html>
