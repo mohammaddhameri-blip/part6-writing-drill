@@ -51,6 +51,13 @@ label{font-weight:800;font-size:13px}
 .progressWrap{height:8px;background:#e8edf5;border-radius:99px;overflow:hidden;margin-top:8px}
 .progressBar{height:100%;background:var(--primary);border-radius:99px}
 .panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 5px 20px rgba(24,39,75,.05)}
+.drillLaunch{display:flex;align-items:center;gap:16px;cursor:pointer;transition:.18s ease}
+.drillLaunch:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:#b7c9f5}
+.drillBadge{width:54px;height:54px;border-radius:16px;background:#fff2d9;color:#9a5a00;display:grid;place-items:center;font-size:25px;font-weight:950;flex:0 0 auto}
+.drillLaunch h3{margin:0 0 5px}.drillLaunch p{margin:0;color:var(--muted);line-height:1.45}
+.drillProgress{margin-left:auto;text-align:right;white-space:nowrap}
+.drillProgress b{font-size:22px;color:var(--primary)}
+@media(max-width:560px){.drillLaunch{align-items:flex-start;flex-wrap:wrap}.drillProgress{margin-left:0}}
 .tip{background:#f0f6ff;border:1px solid #d6e4ff;border-radius:14px;padding:13px 14px;color:#26466f;line-height:1.45}
 .questionBox{background:#f8fafc;border:1px solid var(--line);border-radius:15px;padding:15px;margin:14px 0;white-space:pre-line;line-height:1.55}
 .answerBank{display:flex;gap:8px;flex-wrap:wrap;padding:12px;background:#fff8e8;border:1px solid #f4dca3;border-radius:13px;margin:12px 0}
@@ -134,6 +141,8 @@ label{font-weight:800;font-size:13px}
   </div>
   <div class="sectionHead"><div><h2>Training Modules</h2><p>Reach at least 80% to unlock the next module.</p></div></div>
   <div id="moduleGrid" class="moduleGrid"></div>
+  <div class="sectionHead"><div><h2>Part 6 Drills</h2><p>Six harder full Part 6 tasks with less predictable prompt wording.</p></div></div>
+  <div id="drillSection"></div>
 </section>
 
 <section id="moduleScreen" class="hidden"></section>
@@ -361,6 +370,16 @@ function renderHome(){
       <h3>${m.title}</h3><p>${m.desc}</p>
       <div class="moduleFoot"><b>${m.n===4?"Mastery": "Best score"}: ${m.best}%</b><div class="progressWrap"><div class="progressBar" style="width:${Math.min(100,m.best)}%"></div></div></div>
     </div>`).join("");
+  const drillRows=(state.qProgress||[]).filter(x=>Number(x.question_no)>=37&&Number(x.question_no)<=42);
+  const drillDone=drillRows.length;
+  const drillMastered=drillRows.filter(x=>x.mastered===true).length;
+  $("#drillSection").innerHTML=p.module4Unlocked===true
+    ?`<div class="panel drillLaunch" onclick="openPart6Drills()">
+        <div class="drillBadge">✎</div>
+        <div><h3>Part 6 Drills</h3><p>6 harder exam-style email tasks. Each set uses one or two prompts beyond the usual 5W1H pattern.</p></div>
+        <div class="drillProgress"><b>${drillDone}/6</b><br><small>${drillMastered} mastered</small></div>
+      </div>`
+    :`<div class="panel" style="opacity:.66"><b>🔒 Part 6 Drills</b><p style="margin:6px 0 0;color:var(--muted)">Complete Modules 1–3 to unlock full writing and these harder drills.</p></div>`;
 }
 
 function openModule(n){
@@ -478,6 +497,31 @@ async function loadQuestions(){
   catch(e){console.error(e)}
 }
 
+async function openPart6Drills(){
+  showOnly("writingScreen");
+  $("#writingScreen").innerHTML=`<div class="row"><button class="ghost" onclick="showHome()">← Back</button></div><div class="panel" style="margin-top:14px"><span class="loader"></span> Loading Part 6 drills…</div>`;
+  try{
+    if(!state.questions.length){const data=await api("questions");state.questions=data.questions||[]}
+    renderPart6Drills();
+  }catch(e){$("#writingScreen").innerHTML=`<div class="feedbackBox bad">${esc(e.message)}</div>`}
+}
+
+function renderPart6Drills(){
+  const qs=state.questions.filter(q=>Number(q.stage)===7);
+  $("#writingScreen").innerHTML=`<div class="row"><button class="ghost" onclick="showHome()">← Back</button><div class="spacer"></div><span class="statusTag">Harder practice • 6 tasks</span></div>
+  <div class="hero" style="margin-top:14px"><h1>Part 6 Drills</h1><p>These six complete Part 6 tasks are harder because one or two of the three prompts use less predictable wording. Write 30–50 words and submit for the same AI marking and correction feedback.</p></div>
+  <div class="qGrid" style="margin-top:16px">${qs.map(q=>{
+    const p=qp(q.question_no);
+    return `<button class="qCard" onclick="openQuestion(${q.question_no})"><span class="qStatus">${statusIcon(p)}</span><b>Drill ${Number(q.question_no)-36}</b><small>${esc(q.title)}</small>${p?`<div style="margin-top:7px;font-size:12px">Latest: <b>${p.latest_score}/10</b> • Attempts: ${p.attempts}</div>`:""}</button>`
+  }).join("")}</div>
+  <div class="tip" style="margin-top:15px"><b>Focus:</b> work out what each bullet is asking before you start writing. Do not rely only on familiar What, Where, When, Who, Why and How questions.</div>`;
+}
+
+function writingBack(){
+  if(Number(state.activeQuestion?.stage)===7) renderPart6Drills();
+  else renderWritingHub();
+}
+
 async function openWritingHub(){
   showOnly("writingScreen");
   $("#writingScreen").innerHTML=`<div class="row"><button class="ghost" onclick="showHome()">← Back</button></div><div class="panel" style="margin-top:14px"><span class="loader"></span> Loading writing questions…</div>`;
@@ -515,9 +559,9 @@ function draftKey(){return `part6_draft_${state.code}_${state.activeQuestion.que
 function renderQuestion(){
   const q=state.activeQuestion,last=latestAttempt(),draft=localStorage.getItem(draftKey());
   const initial=draft!==null?draft:(last?last.response_text:"");
-  $("#writingScreen").innerHTML=`<div class="row"><button class="ghost" onclick="renderWritingHub()">← Questions</button><div class="spacer"></div><span class="statusTag">Stage ${q.stage}</span></div>
+  $("#writingScreen").innerHTML=`<div class="row"><button class="ghost" onclick="writingBack()">← Questions</button><div class="spacer"></div><span class="statusTag">Stage ${q.stage}</span></div>
   <div class="panel" style="margin-top:14px">
-    <h2 style="margin-top:0">Question ${q.question_no}: ${esc(q.title)}</h2>
+    <h2 style="margin-top:0">${Number(q.stage)===7?`Part 6 Drill ${Number(q.question_no)-36}`:`Question ${q.question_no}`}: ${esc(q.title)}</h2>
     <div class="questionBox">${esc(q.task_text)}</div>
     <label>Your email</label>
     <textarea id="essayBox" class="textArea" placeholder="Hello ...," oninput="essayChanged()">${esc(initial)}</textarea>
@@ -570,7 +614,7 @@ function renderMarkResult(a){
   <h3>What to improve</h3><div class="feedbackBox warn">${esc(a.feedback?.improve||"")}</div>
   ${issues?`<h3>Corrections to make</h3>${issues}`:"<div class='feedbackBox good'><b>No specific correction is needed. Well done!</b></div>"}
   <div class="tip" style="margin-top:12px"><b>Tip:</b> ${esc(a.feedback?.tip||"")}</div>
-  <div class="row" style="margin-top:14px"><button class="primary" onclick="correctAnswer()">Correct My Answer</button><button class="secondary" onclick="renderWritingHub()">Back to Questions</button></div>`;
+  <div class="row" style="margin-top:14px"><button class="primary" onclick="correctAnswer()">Correct My Answer</button><button class="secondary" onclick="writingBack()">Back to Questions</button></div>`;
   box.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
